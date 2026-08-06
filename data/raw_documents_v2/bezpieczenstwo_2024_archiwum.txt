@@ -1,0 +1,18 @@
+POLITYKA BEZPIECZEŃSTWA INFORMACJI
+Wersja: 2.1
+Status: ARCHIWALNY — NIE STOSOWAĆ
+Obowiązywała do: 30 czerwca 2026 r.
+
+Dokument pozostawiono wyłącznie w celach historycznych. Aktualne wymagania znajdują się w polityce bezpieczeństwa obowiązującej od 1 lipca 2026 r.
+
+1. Hasła
+
+W tej nieaktualnej wersji wymagano, aby hasło służbowe miało co najmniej 12 znaków. Uwierzytelnianie wieloskładnikowe było obowiązkowe tylko dla kont administratorów, a dla pozostałych użytkowników było zalecane.
+
+2. Incydenty bezpieczeństwa
+
+W poprzednim procesie pracownik miał do dwóch godzin na zgłoszenie podejrzenia naruszenia bezpieczeństwa. Zgłoszenie wykonywano wyłącznie przez portal serwisowy.
+
+3. Ostrzeżenie
+
+Powyższych terminów i wymagań nie należy stosować do bieżących zdarzeń. Dokument może pojawić się w wynikach wyszukiwania, ale nie stanowi podstawy aktualnej odpowiedzi operacyjnej.

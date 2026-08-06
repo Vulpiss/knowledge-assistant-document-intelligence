@@ -1,0 +1,19 @@
+PROCEDURA OBSŁUGI AWARII I ZGŁOSZEŃ IT
+Status: OBOWIĄZUJĄCY
+Wersja: 2.3
+
+1. Awarie krytyczne
+
+Awarię krytyczną, która uniemożliwia pracę całego zespołu, blokuje dostęp do systemu podstawowego albo może prowadzić do utraty danych, należy zgłosić natychmiast telefonicznie do dyżurnego IT. Po rozmowie należy utworzyć zgłoszenie w portalu serwisowym i wpisać numer otrzymany od dyżurnego.
+
+Do awarii krytycznych nie zalicza się pojedynczego problemu z drukarką, zużytej baterii w laptopie ani braku dostępu do nieobowiązkowej aplikacji.
+
+2. Zgłoszenia standardowe
+
+Zwykłe usterki należy zgłaszać w portalu serwisowym nie później niż do końca następnego dnia roboczego. Dział IT nadaje priorytet na podstawie wpływu na pracę, liczby użytkowników i ryzyka bezpieczeństwa.
+
+3. Sprzęt zastępczy
+
+Sprzęt zastępczy może zostać wydany, gdy przewidywany czas naprawy przekracza jeden dzień roboczy. Wydanie urządzenia zastępczego nie oznacza zatwierdzenia zakupu nowego sprzętu.
+
+Zużycie baterii poniżej deklarowanej wydajności jest usterką eksploatacyjną, ale nie jest traktowane jako uszkodzenie wymagające zgłoszenia w ciągu 24 godzin.

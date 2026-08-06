@@ -1,0 +1,48 @@
+Czerwiec
+22 - ROzpoczecie pracy nad projektem Ai Asistant, przygotowanie frameworku, założeń, wstępnej struktury projektu
+23 - Ustalenie założeń projektu
+24 - Przygotowanie struktury Folderów pod projekt
+25 - Przygotowanie plików py
+26 - Poprawa struktury projektów i instalacja wymaganych bibliotek
+27 - Stworzenie pliku logger.py i pierwsza wersja main.py
+28 - Stworzenie plików .gitignore, .env, .env.example, logger.py oraz config.py
+29 - Dodanie plików .gitkeep oraz test pliku main.py
+30 - Stworzenie pliku document.py oraz uzupełnienie plików: txt_loader.py, pdf_loader.py, docx_loader.py
+Lipiec
+1 - Zmiana main.py
+2 - Test main.py i analiza
+3 - Poprawienie plików .gitkeep oraz main.py
+4 - Test nowej wersji mani.py
+5 - Update pliku cleaner.py, metadata_builder.py, main.py utworzneie plików Processed_document.py, document_processor.py
+6 - Test nowej wersji main.py
+7 - Stworzenie pliku chun.py, zmiana pliku chunker.py oraz main.py oraz .env i env.example
+8 - Test nowej wersji main.py
+9 - Stworzenie pliku embedding_service.py, zmiana pliku config.py, embedded_chunk.py oraz main.py oraz .env i env.example
+10 - Test nowej wersji main.py
+11 - Aktualizacja REquirements, env, env.example, gitignore, config.py, main.py, uzupełniene vector_store.py
+12 - Test nowej wersji main.py
+13 - Update .env .env,example, config.py retrieval.py, main.py, embedding_service.py,  stworzenie cli.py, retrieved_chunk, vector_search_result.py
+14 - Test nowej wersji main.py
+15 - Zmiana pliku gitignore
+16 - Test pliku retrieval_eval.py
+17 - Poprawa pliku retrieval_eval.py
+18 - Dodanie infrastruktury grounded answer generation
+19 - Aktualizacja pliku requirements.txt, aktualizajce env, env.example, main.py, cli, answer_models.py, context_builder.py, prompt_builder.py, llm_client.py, answer_service.py
+20 - Test nowej wersji main.py
+21 - Pobranie, instalacja i test Ollama
+22 - Test ollama oraz nowego main.py
+23 - Stworzenie indexing_service.py
+24 - Uzupełnienie indexing_service.py, update main.py, vector_store.py
+25 - Test nowej wersji main.py
+26 - Ulepszenie ewaluacji LLM
+27 - Test nowej wersji main.py
+28 - Zmiana struktury frameworku odmowy
+29 - Test jakości promptu
+30 - Update plików answer_service.py, llm_client.py, prompt_builder.py
+31 - Test llm_client 
+Sierpień
+1 - Update main.py
+2 - Test main.py
+3 - Przygotowanie Nowych 12 scenariuszy do zarządzania
+4 - Przygotowanie Cli v2
+5 - Testy programu, evaluation danych oraz przygotowanie struktury pod github

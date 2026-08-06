@@ -1,0 +1,60 @@
+{
+  "baseline_version": "step-13-v1",
+  "model": "gemma3:4b",
+  "profiles": {
+    "v1": {
+      "retrieval": {
+        "total_cases": 9,
+        "minimum": {
+          "recall_at_1": 1.0,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "phrase_recall_at_1": 1.0,
+          "mrr": 1.0
+        },
+        "maximum": {}
+      },
+      "answers": {
+        "total_cases": 6,
+        "minimum": {
+          "overall_pass_rate": 1.0,
+          "answer_accuracy": 1.0,
+          "citation_accuracy": 1.0,
+          "refusal_accuracy": 1.0,
+          "grounded_answer_rate": 1.0
+        },
+        "maximum": {
+          "hallucination_rate": 0.0,
+          "execution_error_rate": 0.0
+        }
+      }
+    },
+    "v2": {
+      "retrieval": {
+        "total_cases": 30,
+        "minimum": {
+          "recall_at_1": 1.0,
+          "recall_at_3": 1.0,
+          "recall_at_5": 1.0,
+          "phrase_recall_at_1": 0.9,
+          "mrr": 1.0
+        },
+        "maximum": {}
+      },
+      "answers": {
+        "total_cases": 35,
+        "minimum": {
+          "overall_pass_rate": 1.0,
+          "answer_accuracy": 1.0,
+          "citation_accuracy": 1.0,
+          "refusal_accuracy": 1.0,
+          "grounded_answer_rate": 1.0
+        },
+        "maximum": {
+          "hallucination_rate": 0.0,
+          "execution_error_rate": 0.0
+        }
+      }
+    }
+  }
+}

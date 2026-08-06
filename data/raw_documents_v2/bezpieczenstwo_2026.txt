@@ -1,0 +1,22 @@
+POLITYKA BEZPIECZEŃSTWA INFORMACJI
+Wersja: 3.2
+Status: OBOWIĄZUJĄCY
+Obowiązuje od: 1 lipca 2026 r.
+
+1. Hasła i uwierzytelnianie
+
+Hasło do każdego konta służbowego musi składać się z co najmniej 14 znaków. Powinno zawierać wielkie i małe litery, cyfrę oraz znak specjalny. Zabronione jest używanie haseł wykorzystywanych wcześniej w usługach prywatnych.
+
+Uwierzytelnianie wieloskładnikowe jest obowiązkowe dla poczty służbowej, systemu kadrowego, połączeń VPN oraz paneli administracyjnych. Kodów jednorazowych nie wolno przekazywać innym osobom, także przełożonym i pracownikom działu IT.
+
+2. Zgłaszanie naruszeń
+
+Podejrzenie naruszenia bezpieczeństwa należy zgłosić niezwłocznie, nie później niż w ciągu 30 minut od jego zauważenia. Zgłoszenie powinno zostać wykonane telefonicznie do dyżurnego zespołu bezpieczeństwa, a następnie potwierdzone w portalu serwisowym.
+
+Za naruszenie uważa się między innymi utratę urządzenia, podejrzane logowanie, wysłanie dokumentu do niewłaściwego odbiorcy, otwarcie podejrzanego załącznika oraz ujawnienie hasła.
+
+3. Praca poza siedzibą
+
+Dostęp do systemów firmowych poza siedzibą wymaga połączenia VPN. Dokumentów oznaczonych jako poufne nie wolno przechowywać na prywatnych urządzeniach ani wysyłać na prywatne skrzynki pocztowe.
+
+W przypadku sprzeczności z wcześniejszymi instrukcjami obowiązuje niniejsza wersja dokumentu.

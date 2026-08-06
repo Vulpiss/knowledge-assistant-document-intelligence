@@ -1,0 +1,57 @@
+# Python
+
+**pycache**/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Virtual environment
+
+.venv/
+venv/
+
+# Environment variables
+
+.env
+
+# Logs
+
+logs/
+*.log
+
+# Raw and processed data
+
+data/raw_documents/*
+data/processed/*
+
+# Keep directories
+
+!data/raw_documents/.gitkeep
+!data/processed/.gitkeep
+
+# Keep controlled evaluation documents
+
+!data/raw_documents/urlopy.txt
+!data/raw_documents/bezpieczenstwo.txt
+!data/raw_documents/sprzet.txt
+
+# Evaluation datasets
+
+data/eval/*
+!data/eval/.gitkeep
+!data/eval/*.json
+
+# Local vector database
+
+data/qdrant/
+
+# IDE
+
+.vscode/
+.idea/
+
+# Operating system
+
+.DS_Store
+Thumbs.db

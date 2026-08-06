@@ -1,0 +1,11 @@
+Polityka bezpieczeństwa informacji
+
+Hasło do konta służbowego musi składać się z co najmniej 14 znaków.
+
+Uwierzytelnianie wieloskładnikowe jest obowiązkowe dla wszystkich kont posiadających dostęp do danych firmowych.
+
+Pracownik nie może udostępniać swojego hasła innym osobom, w tym przełożonym i pracownikom działu IT.
+
+Podejrzenie naruszenia bezpieczeństwa należy zgłosić do działu bezpieczeństwa w ciągu 30 minut od jego wykrycia.
+
+Zabronione jest przesyłanie dokumentów firmowych na prywatne skrzynki pocztowe.

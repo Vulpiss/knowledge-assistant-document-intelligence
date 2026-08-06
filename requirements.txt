@@ -1,0 +1,12 @@
+python-dotenv
+pydantic
+loguru
+
+PyMuPDF
+python-docx
+
+sentence-transformers
+numpy
+
+qdrant-client
+requests

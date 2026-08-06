@@ -1,0 +1,19 @@
+REGULAMIN PRACY ZDALNEJ
+Status: OBOWIĄZUJĄCY
+Wersja: 2.2
+
+1. Limit
+
+Pracownik może wykonywać pracę zdalną maksymalnie przez 2 dni w tygodniu, o ile charakter stanowiska na to pozwala. Niewykorzystane dni nie przechodzą na kolejny tydzień.
+
+2. Zgoda
+
+Każdy dzień pracy zdalnej wymaga wcześniejszej akceptacji przełożonego w systemie kadrowym. Stały harmonogram może zostać zatwierdzony na okres do trzech miesięcy.
+
+3. Bezpieczeństwo
+
+Połączenie z systemami firmowymi musi odbywać się przez VPN i z użyciem uwierzytelniania wieloskładnikowego. Dokumentów poufnych nie wolno drukować w miejscu pracy zdalnej bez pisemnej zgody właściciela informacji.
+
+4. Sprzęt i koszty
+
+Pracownik korzysta ze sprzętu przekazanego przez pracodawcę. Regulamin nie przewiduje automatycznego zwrotu kosztów prywatnego internetu. Ewentualny ryczałt wymaga odrębnej decyzji i nie jest opisany w tym dokumencie.

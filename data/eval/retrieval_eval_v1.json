@@ -1,0 +1,56 @@
+[
+  {
+    "case_id": "leave_001",
+    "question": "Ile wcześniej należy złożyć standardowy wniosek urlopowy?",
+    "expected_document": "urlopy.txt",
+    "expected_phrase": "co najmniej 14 dni"
+  },
+  {
+    "case_id": "leave_002",
+    "question": "Kto musi zaakceptować wniosek o urlop?",
+    "expected_document": "urlopy.txt",
+    "expected_phrase": "bezpośredniego przełożonego"
+  },
+  {
+    "case_id": "leave_003",
+    "question": "Co zrobić, gdy urlop jest potrzebny w nagłym przypadku?",
+    "expected_document": "urlopy.txt",
+    "expected_phrase": "skontaktować się z przełożonym"
+  },
+  {
+    "case_id": "security_001",
+    "question": "Ile znaków musi mieć hasło służbowe?",
+    "expected_document": "bezpieczenstwo.txt",
+    "expected_phrase": "co najmniej 14 znaków"
+  },
+  {
+    "case_id": "security_002",
+    "question": "Czy uwierzytelnianie wieloskładnikowe jest obowiązkowe?",
+    "expected_document": "bezpieczenstwo.txt",
+    "expected_phrase": "jest obowiązkowe"
+  },
+  {
+    "case_id": "security_003",
+    "question": "W jakim czasie trzeba zgłosić naruszenie bezpieczeństwa?",
+    "expected_document": "bezpieczenstwo.txt",
+    "expected_phrase": "w ciągu 30 minut"
+  },
+  {
+    "case_id": "equipment_001",
+    "question": "Jak długo standardowo używany jest laptop służbowy?",
+    "expected_document": "sprzet.txt",
+    "expected_phrase": "4 lata"
+  },
+  {
+    "case_id": "equipment_002",
+    "question": "Gdzie należy złożyć wniosek o nowy komputer?",
+    "expected_document": "sprzet.txt",
+    "expected_phrase": "przez system Service Desk"
+  },
+  {
+    "case_id": "equipment_003",
+    "question": "Ile czasu jest na zgłoszenie uszkodzenia sprzętu?",
+    "expected_document": "sprzet.txt",
+    "expected_phrase": "w ciągu 24 godzin"
+  }
+]

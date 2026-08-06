@@ -1,0 +1,19 @@
+POLITYKA RETENCJI DOKUMENTÓW
+Status: OBOWIĄZUJĄCY
+Wersja: 1.8
+
+1. Raporty operacyjne
+
+Standardowe raporty operacyjne należy przechowywać przez 30 dni od dnia ich zatwierdzenia, chyba że zostały objęte postępowaniem wyjaśniającym albo obowiązkiem dłuższego zabezpieczenia.
+
+2. Logi bezpieczeństwa
+
+Logi bezpieczeństwa systemów informatycznych przechowuje się przez 12 miesięcy. Dostęp do logów jest ograniczony do zespołu bezpieczeństwa i upoważnionych administratorów.
+
+3. Dokumenty finansowe
+
+Faktury i dokumenty księgowe przechowuje się przez 5 lat liczonych od końca roku, którego dotyczą, o ile przepisy szczególne nie wymagają dłuższego okresu.
+
+4. Usuwanie
+
+Po upływie okresu retencji dokumenty należy usunąć w sposób uniemożliwiający ich odtworzenie. Samo przeniesienie pliku do kosza użytkownika nie jest wystarczające.

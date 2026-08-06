@@ -1,0 +1,59 @@
+[
+  {
+    "case_id": "answer_leave_001",
+    "question": "Ile wcześniej należy złożyć standardowy wniosek urlopowy?",
+    "accepted_answer_phrases": [
+      "co najmniej 14 dni",
+      "minimum 14 dni"
+    ],
+    "expected_documents": [
+      "urlopy.txt"
+    ],
+    "should_refuse": false
+  },
+  {
+    "case_id": "answer_security_001",
+    "question": "Ile znaków musi mieć hasło do konta służbowego?",
+    "accepted_answer_phrases": [
+      "co najmniej 14 znaków",
+      "minimum 14 znaków"
+    ],
+    "expected_documents": [
+      "bezpieczenstwo.txt"
+    ],
+    "should_refuse": false
+  },
+  {
+    "case_id": "answer_equipment_001",
+    "question": "Jak długo standardowo użytkowany jest laptop służbowy?",
+    "accepted_answer_phrases": [
+      "4 lata",
+      "cztery lata"
+    ],
+    "expected_documents": [
+      "sprzet.txt"
+    ],
+    "should_refuse": false
+  },
+  {
+    "case_id": "refusal_leave_001",
+    "question": "Ile dni urlopu przysługuje pracownikowi w ciągu roku?",
+    "accepted_answer_phrases": [],
+    "expected_documents": [],
+    "should_refuse": true
+  },
+  {
+    "case_id": "refusal_salary_001",
+    "question": "Jaka jest wysokość miesięcznej premii pracownika?",
+    "accepted_answer_phrases": [],
+    "expected_documents": [],
+    "should_refuse": true
+  },
+  {
+    "case_id": "refusal_equipment_001",
+    "question": "Jakiej marki powinien być służbowy laptop?",
+    "accepted_answer_phrases": [],
+    "expected_documents": [],
+    "should_refuse": true
+  }
+]

@@ -1,0 +1,29 @@
+POLITYKA DOSTĘPÓW I UPRAWNIEŃ
+Status: OBOWIĄZUJĄCY
+Wersja: 3.5
+
+1. Nadawanie dostępu
+
+Dostęp do systemu służbowego nadaje się wyłącznie na podstawie zaakceptowanego wniosku. Wniosek składa bezpośredni przełożony pracownika w portalu serwisowym. Musi on wskazać nazwę systemu, zakres potrzebnych uprawnień, uzasadnienie biznesowe oraz planowany okres dostępu.
+
+Dział IT realizuje standardowy wniosek o dostęp w ciągu 2 dni roboczych od chwili uzyskania wszystkich wymaganych akceptacji. Termin nie obejmuje czasu oczekiwania na uzupełnienie brakujących danych.
+
+2. Zasada najmniejszych uprawnień
+
+Użytkownik otrzymuje wyłącznie uprawnienia niezbędne do wykonywania obowiązków. Dostęp administracyjny nie może być nadawany tylko dlatego, że przyspiesza pracę. Konta współdzielone są zabronione, chyba że zostały formalnie zatwierdzone jako konta techniczne i objęte dodatkowym monitoringiem.
+
+3. Dostęp czasowy
+
+Dostęp dla wykonawcy zewnętrznego może zostać nadany maksymalnie na 30 dni. Przedłużenie wymaga nowego potwierdzenia właściciela systemu. Po upływie terminu dostęp powinien zostać automatycznie wyłączony.
+
+4. Odbieranie uprawnień
+
+Przełożony zgłasza zmianę lub odebranie dostępu niezwłocznie po zmianie stanowiska, zakresu obowiązków albo zakończeniu współpracy. W przypadku zakończenia zatrudnienia konta użytkownika muszą zostać zablokowane najpóźniej w chwili ustania stosunku pracy.
+
+5. Przeglądy okresowe
+
+Właściciele systemów wykonują przegląd aktywnych uprawnień co 6 miesięcy. Brak odpowiedzi właściciela systemu nie oznacza automatycznego przedłużenia dostępu.
+
+6. Zakres dokumentu
+
+Polityka nie zawiera listy imiennych administratorów ani ich haseł. Nie określa również, kto aktualnie pełni funkcję właściciela konkretnego systemu, ponieważ informacje te są przechowywane w rejestrze uprawnień.
