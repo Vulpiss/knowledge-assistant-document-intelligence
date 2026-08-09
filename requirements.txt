@@ -10,3 +10,4 @@ numpy
 
 qdrant-client
 requests
+streamlit>=1.41,<2
