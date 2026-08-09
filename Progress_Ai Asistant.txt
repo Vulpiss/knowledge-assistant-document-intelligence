@@ -47,4 +47,6 @@ Sierpień
 4 - Przygotowanie Cli v2
 5 - Testy programu, evaluation danych oraz przygotowanie struktury pod github
 6 - Test Streamlit projektu
-7 - Testy negatywne programu
+7 - Testy negatywne program
+8 - Przygotowanie programu pod github
+9 - Test programu pod kątem github

@@ -1,0 +1,1 @@
+"""Szybkie testy jednostkowe projektu."""

@@ -20,6 +20,7 @@ ewaluacyjne. Corpus wybiera się argumentem `--corpus`.
 .\.venv\Scripts\python.exe main.py evaluate-answers --corpus v2
 .\.venv\Scripts\python.exe main.py release-check
 .\.venv\Scripts\python.exe -m streamlit run app\interfaces\streamlit_app.py
+python -m unittest discover -s tests -v
 ```
 
 `release-check` kolejno testuje retrieval i odpowiedzi dla v1 oraz v2.
@@ -69,3 +70,26 @@ Przed ewaluacją zakończ tryb `ask`, wpisując `q` i naciskając Enter.
 
 Dodano lokalny interfejs Streamlit z wyborem corpusu, historią rozmowy,
 cytowaniami, statusem indeksu i komunikatami dla blokady Qdrant/Ollama.
+
+## Szybkie testy i CI — wersja 0.15.0
+
+Szybkie testy jednostkowe nie uruchamiają Ollama, Qdrant ani modelu
+embeddingowego. Sprawdzają kontrakt odpowiedzi, profile corpusów, reranking,
+budowę kontekstu oraz zamrożony baseline jakości.
+
+Uruchomienie lokalne:
+
+```powershell
+python -m unittest discover -s tests -v
+python -m compileall -q app main.py tests
+```
+
+Workflow `.github/workflows/ci.yml` uruchamia te same kontrole dla każdego
+push do gałęzi `main` oraz dla pull requestów. Używa lekkiego pliku
+`requirements-ci.txt`, dlatego nie pobiera modeli i nie wymaga sekretów.
+
+Pełna bramka jakości nadal pozostaje lokalna:
+
+```powershell
+python main.py release-check
+```
