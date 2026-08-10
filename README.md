@@ -5,15 +5,19 @@ i generowania odpowiedzi z cytowaniami przy użyciu Qdrant i Ollama.
 
 ## Obsługiwane corpusy
 
+- `production` — prywatne dokumenty dodawane przez użytkownika,
 - `v1` — podstawowy zestaw dokumentów i testów,
 - `v2` — stress test obejmujący konflikty wersji, odmowy i prompt injection.
 
-Każdy corpus ma osobny katalog dokumentów, kolekcję Qdrant i pliki
-ewaluacyjne. Corpus wybiera się argumentem `--corpus`.
+Każdy corpus ma osobny katalog dokumentów i kolekcję Qdrant. Pliki
+ewaluacyjne są przypisane wyłącznie do v1 i v2. Corpus wybiera się
+argumentem `--corpus` albo w interfejsie Streamlit.
 
 ## Najważniejsze polecenia
 
 ```powershell
+.\.venv\Scripts\python.exe main.py index --corpus production --rebuild
+.\.venv\Scripts\python.exe main.py ask --corpus production
 .\.venv\Scripts\python.exe main.py index --corpus v2 --rebuild
 .\.venv\Scripts\python.exe main.py ask --corpus v2
 .\.venv\Scripts\python.exe main.py evaluate --corpus v2
@@ -30,9 +34,9 @@ oznacza regresję albo błąd środowiska.
 
 ## Interfejs przeglądarkowy
 
-Interfejs Streamlit pozwala wybierać corpus v1/v2, prowadzić osobną historię
-rozmowy dla każdego zestawu, wyświetlać źródła i bezpiecznie prezentować
-kontrolowane odmowy.
+Interfejs Streamlit pozwala korzystać z prywatnego corpusu `production`,
+wybierać testowe corpusy v1/v2, prowadzić osobną historię rozmowy dla każdego
+zestawu, wyświetlać źródła i bezpiecznie prezentować kontrolowane odmowy.
 
 Przed pierwszym uruchomieniem zainstaluj zależności:
 
@@ -48,6 +52,21 @@ Następnie uruchom aplikację:
 
 Przeglądarka powinna otworzyć adres `http://localhost:8501`. Zatrzymanie
 aplikacji: `Ctrl+C` w oknie PowerShell.
+
+### Własne dokumenty
+
+1. W panelu bocznym wybierz `MOJE DOKUMENTY`.
+2. Dodaj pliki TXT, PDF lub DOCX. Limit pojedynczego pliku wynosi 20 MB.
+3. Kliknij `Zapisz dokumenty`.
+4. Kliknij `Przebuduj indeks`.
+5. Po komunikacie o gotowym indeksie zadaj pytanie w oknie rozmowy.
+
+Usunięcie dokumentu wymaga potwierdzenia. Po dodaniu albo usunięciu pliku
+należy przebudować indeks. Jeżeli usunięto wszystkie dokumenty, przycisk
+`Wyczyść pusty indeks` usuwa także ich stare fragmenty z Qdrant.
+
+Pliki w `data/user_documents` oraz lokalna baza `data/qdrant` są ignorowane
+przez Git. Prywatne dokumenty nie są wysyłane do repozytorium GitHub.
 
 ## Ważne ograniczenie lokalnego Qdrant
 
@@ -93,3 +112,10 @@ Pełna bramka jakości nadal pozostaje lokalna:
 ```powershell
 python main.py release-check
 ```
+
+## Wersja 0.17.0 — prywatna baza dokumentów
+
+Dodano odizolowany profil `production`, bezpieczny upload i usuwanie plików,
+przebudowę indeksu z poziomu Streamlit, status Ollamy oraz ochronę prywatnych
+dokumentów przed przypadkowym dodaniem do Git. Corpusy v1 i v2 nadal służą
+wyłącznie jako zamrożone zestawy jakościowe.

@@ -35,6 +35,9 @@ class IndexingService:
         document_processor: DocumentProcessor | None = None,
         chunker: RecursiveTextChunker | None = None,
         embedding_service: EmbeddingService | None = None,
+        documents_directory: Path | None = None,
+        database_path: Path | None = None,
+        collection_name: str | None = None,
     ) -> None:
         self.loader_factory = (
             loader_factory or DocumentLoaderFactory()
@@ -51,21 +54,32 @@ class IndexingService:
         self.embedding_service = (
             embedding_service or EmbeddingService()
         )
+        self.documents_directory = (
+            documents_directory or config.raw_documents_dir
+        )
+        self.database_path = database_path or config.qdrant_path
+        self.collection_name = (
+            collection_name or config.qdrant_collection
+        )
 
     def index(
         self,
         rebuild: bool = False,
     ) -> IndexingSummary:
         config.ensure_directories()
+        self.documents_directory.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
 
         document_paths = self._find_document_paths(
-            config.raw_documents_dir
+            self.documents_directory
         )
 
         if not document_paths:
             raise RuntimeError(
                 "Nie znaleziono dokumentów PDF, DOCX ani TXT "
-                f"w katalogu: {config.raw_documents_dir}"
+                f"w katalogu: {self.documents_directory}"
             )
 
         logger.info(
@@ -123,7 +137,10 @@ class IndexingService:
                 "Nie udało się utworzyć embeddingów."
             )
 
-        vector_store = QdrantVectorStore()
+        vector_store = QdrantVectorStore(
+            database_path=self.database_path,
+            collection_name=self.collection_name,
+        )
 
         try:
             if rebuild:

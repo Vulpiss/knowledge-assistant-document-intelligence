@@ -76,6 +76,29 @@ class CorpusConfigTests(unittest.TestCase):
                 qdrant_collection="   ",
             )
 
+    def test_production_profile_is_isolated_from_evaluation_data(self) -> None:
+        production = CORPUS_PROFILES["production"]
+        evaluation_profiles = [
+            CORPUS_PROFILES["v1"],
+            CORPUS_PROFILES["v2"],
+        ]
+
+        self.assertEqual(
+            production.raw_documents_dir,
+            Path("data/user_documents"),
+        )
+        self.assertEqual(
+            production.qdrant_collection,
+            "knowledge_chunks_production",
+        )
+        self.assertNotIn(
+            production.qdrant_collection,
+            {
+                profile.qdrant_collection
+                for profile in evaluation_profiles
+            },
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

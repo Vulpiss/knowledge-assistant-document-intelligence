@@ -10,7 +10,8 @@ from pydantic import BaseModel
 load_dotenv()
 
 
-CorpusName = Literal["v1", "v2"]
+CorpusName = Literal["v1", "v2", "production"]
+EVALUATION_CORPORA: tuple[CorpusName, ...] = ("v1", "v2")
 
 
 @dataclass(frozen=True)
@@ -95,6 +96,37 @@ CORPUS_PROFILES: dict[CorpusName, CorpusProfile] = {
             os.getenv(
                 "CORPUS_V2_ANSWER_RESULTS_FILE",
                 str(DEFAULT_EVAL_DIR / "answer_eval_v2_results.json"),
+            )
+        ),
+    ),
+    "production": CorpusProfile(
+        name="production",
+        raw_documents_dir=Path(
+            os.getenv(
+                "CORPUS_PRODUCTION_DOCUMENTS_DIR",
+                "data/user_documents",
+            )
+        ),
+        qdrant_collection=os.getenv(
+            "CORPUS_PRODUCTION_COLLECTION",
+            "knowledge_chunks_production",
+        ),
+        retrieval_eval_file=Path(
+            os.getenv(
+                "CORPUS_PRODUCTION_RETRIEVAL_EVAL_FILE",
+                str(DEFAULT_EVAL_DIR / "retrieval_eval_production.json"),
+            )
+        ),
+        answer_eval_file=Path(
+            os.getenv(
+                "CORPUS_PRODUCTION_ANSWER_EVAL_FILE",
+                str(DEFAULT_EVAL_DIR / "answer_eval_production.json"),
+            )
+        ),
+        answer_eval_results_file=Path(
+            os.getenv(
+                "CORPUS_PRODUCTION_ANSWER_RESULTS_FILE",
+                str(DEFAULT_EVAL_DIR / "answer_eval_production_results.json"),
             )
         ),
     ),

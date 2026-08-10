@@ -50,3 +50,4 @@ Sierpień
 7 - Testy negatywne program
 8 - Przygotowanie programu pod github
 9 - Test programu pod kątem github
+10 - Publikacja prywatnego repozytorium, dodanie corpusu production oraz zarządzania własnymi dokumentami w Streamlit

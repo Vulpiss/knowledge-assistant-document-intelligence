@@ -8,6 +8,7 @@ from loguru import logger
 
 from app.core.config import (
     CORPUS_PROFILES,
+    EVALUATION_CORPORA,
     CorpusName,
     config,
 )
@@ -166,14 +167,18 @@ def add_corpus_arguments(
     include_documents_dir: bool = False,
     include_eval_file: bool = False,
     include_results_file: bool = False,
+    corpus_choices: tuple[CorpusName, ...] | None = None,
 ) -> None:
+    choices = corpus_choices or tuple(CORPUS_PROFILES)
+
     command_parser.add_argument(
         "--corpus",
-        choices=tuple(CORPUS_PROFILES),
+        choices=choices,
         default="v1",
         help=(
-            "Wybiera spójny zestaw dokumentów, kolekcję "
-            "Qdrant i pliki ewaluacyjne (domyślnie: v1)."
+            "Wybiera spójny katalog dokumentów i kolekcję "
+            "Qdrant. V1 i V2 mają także dane ewaluacyjne "
+            "(domyślnie: v1)."
         ),
     )
     command_parser.add_argument(
@@ -314,6 +319,7 @@ def build_parser() -> argparse.ArgumentParser:
     add_corpus_arguments(
         evaluate_parser,
         include_eval_file=True,
+        corpus_choices=EVALUATION_CORPORA,
     )
     evaluate_parser.set_defaults(
         handler=run_evaluate_command
@@ -330,6 +336,7 @@ def build_parser() -> argparse.ArgumentParser:
         answer_evaluate_parser,
         include_eval_file=True,
         include_results_file=True,
+        corpus_choices=EVALUATION_CORPORA,
     )
     answer_evaluate_parser.set_defaults(
         handler=run_evaluate_answers_command

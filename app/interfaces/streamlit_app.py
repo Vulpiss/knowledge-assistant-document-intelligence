@@ -20,12 +20,28 @@ from app.generation.answer_models import GeneratedAnswer
 from app.interfaces.web_runtime import (
     EmptyCorpusError,
     answer_question,
+    delete_production_document,
     get_corpus_status,
+    get_ollama_status,
+    list_production_documents,
+    rebuild_production_index,
+    save_production_document,
 )
 
 
 APP_TITLE = "Knowledge Assistant"
 HISTORY_KEY = "knowledge_assistant_histories"
+DOCUMENT_NOTICE_KEY = "knowledge_assistant_document_notice"
+UPLOAD_VERSION_KEY = "knowledge_assistant_upload_version"
+SELECTED_DOCUMENT_KEY = "knowledge_assistant_selected_document"
+DELETE_CONFIRMATION_KEY = "knowledge_assistant_delete_confirmation"
+
+CORPUS_OPTIONS = ("production", "v2", "v1")
+CORPUS_LABELS = {
+    "production": "MOJE DOKUMENTY",
+    "v2": "V2 — TEST ZAAWANSOWANY",
+    "v1": "V1 — TEST PODSTAWOWY",
+}
 
 EXAMPLE_QUESTIONS = {
     "v1": (
@@ -92,6 +108,9 @@ def _initialize_state() -> None:
             for corpus in CORPUS_PROFILES
         }
 
+    if UPLOAD_VERSION_KEY not in st.session_state:
+        st.session_state[UPLOAD_VERSION_KEY] = 0
+
 
 def _history_for(corpus: str) -> list[dict[str, Any]]:
     histories = st.session_state[HISTORY_KEY]
@@ -107,20 +126,28 @@ def _render_sidebar() -> str:
         st.header("Ustawienia")
         corpus = st.selectbox(
             "Zestaw dokumentów",
-            options=tuple(CORPUS_PROFILES),
-            index=1,
-            format_func=lambda value: value.upper(),
+            options=CORPUS_OPTIONS,
+            index=0,
+            format_func=lambda value: CORPUS_LABELS[value],
             help=(
-                "V1 to podstawowy corpus. V2 zawiera trudniejsze "
-                "konflikty wersji i testy bezpieczeństwa."
+                "Moje dokumenty to prywatna baza użytkowa. "
+                "V1 i V2 pozostają zestawami testowymi."
             ),
         )
 
         profile = CORPUS_PROFILES[corpus]
         st.caption(f"Kolekcja: `{profile.qdrant_collection}`")
 
+        if corpus == "production":
+            _render_document_manager()
+
         try:
             status = get_corpus_status(corpus)
+
+            st.caption(
+                f"Dokumenty: {status.documents} · "
+                f"Chunki: {status.points}"
+            )
 
             if status.points > 0:
                 st.success(
@@ -135,6 +162,8 @@ def _render_sidebar() -> str:
                 icon="🚫",
             )
 
+        st.divider()
+        _render_ollama_status()
         st.divider()
 
         if st.button(
@@ -168,6 +197,13 @@ def _render_examples(
     show: bool,
 ) -> str | None:
     if not show:
+        return None
+
+    if corpus == "production":
+        st.info(
+            "Korzystasz z prywatnej bazy. Dodaj dokumenty w panelu "
+            "po lewej, przebuduj indeks i zadaj własne pytanie."
+        )
         return None
 
     st.subheader("Przykładowe pytania")
@@ -286,6 +322,209 @@ def _render_citation(citation: dict[str, Any]) -> None:
 
         with st.popover("Szczegóły techniczne"):
             st.code(citation["chunk_id"], language=None)
+
+
+@st.cache_data(ttl=10, show_spinner=False)
+def _cached_ollama_status():
+    return get_ollama_status()
+
+
+def _render_ollama_status() -> None:
+    status = _cached_ollama_status()
+
+    if status.available and status.model_available:
+        st.success(status.message, icon="✅")
+    elif status.available:
+        st.warning(status.message, icon="⚠️")
+    else:
+        st.error(status.message, icon="🚫")
+
+
+def _render_document_manager() -> None:
+    st.subheader("Moje dokumenty")
+    _render_document_notice()
+
+    uploaded_files = st.file_uploader(
+        "Dodaj pliki TXT, PDF lub DOCX",
+        type=("txt", "pdf", "docx"),
+        accept_multiple_files=True,
+        key=(
+            "production_upload_"
+            f"{st.session_state[UPLOAD_VERSION_KEY]}"
+        ),
+        help="Maksymalny rozmiar pojedynczego pliku: 20 MB.",
+    )
+
+    if st.button(
+        "Zapisz dokumenty",
+        use_container_width=True,
+        disabled=not uploaded_files,
+    ):
+        saved_names: list[str] = []
+        errors: list[str] = []
+
+        for uploaded_file in uploaded_files or []:
+            try:
+                saved = save_production_document(
+                    uploaded_file.name,
+                    uploaded_file.getvalue(),
+                )
+                saved_names.append(saved.name)
+            except Exception as error:
+                errors.append(f"{uploaded_file.name}: {error}")
+
+        if saved_names:
+            message = (
+                f"Zapisano {len(saved_names)} dokumentów. "
+                "Przebuduj indeks, aby uwzględnić je w odpowiedziach."
+            )
+            notice_type = "success" if not errors else "warning"
+        else:
+            message = "Nie zapisano żadnego dokumentu."
+            notice_type = "error"
+
+        if errors:
+            message += "\n\n" + "\n".join(
+                f"- {error}" for error in errors
+            )
+
+        _set_document_notice(notice_type, message)
+        st.session_state[UPLOAD_VERSION_KEY] += 1
+        st.rerun()
+
+    documents = list_production_documents()
+
+    if documents:
+        st.caption(f"Zapisane dokumenty: {len(documents)}")
+
+        for document in documents:
+            st.write(
+                f"• `{document.name}` "
+                f"({_format_file_size(document.size_bytes)})"
+            )
+
+        selected_document = st.selectbox(
+            "Dokument do usunięcia",
+            options=[document.name for document in documents],
+            index=None,
+            placeholder="Wybierz dokument",
+            key=SELECTED_DOCUMENT_KEY,
+            on_change=_reset_delete_confirmation,
+        )
+        deletion_confirmed = st.checkbox(
+            "Potwierdzam usunięcie wybranego dokumentu",
+            disabled=selected_document is None,
+            key=DELETE_CONFIRMATION_KEY,
+        )
+
+        if st.button(
+            "Usuń dokument",
+            use_container_width=True,
+            disabled=(
+                selected_document is None
+                or not deletion_confirmed
+            ),
+        ):
+            try:
+                deleted = delete_production_document(
+                    selected_document
+                )
+            except Exception as error:
+                _set_document_notice("error", str(error))
+            else:
+                if deleted:
+                    _set_document_notice(
+                        "success",
+                        "Dokument został usunięty. Przebuduj indeks, "
+                        "aby usunąć jego treść z odpowiedzi.",
+                    )
+                else:
+                    _set_document_notice(
+                        "warning",
+                        "Dokument nie istnieje.",
+                    )
+
+            st.rerun()
+    else:
+        st.caption("Nie dodano jeszcze własnych dokumentów.")
+
+    rebuild_label = (
+        "Przebuduj indeks"
+        if documents
+        else "Wyczyść pusty indeks"
+    )
+
+    if st.button(
+        rebuild_label,
+        use_container_width=True,
+        type="primary",
+        help=(
+            "Tworzy indeks od nowa wyłącznie dla prywatnej "
+            "kolekcji production."
+        ),
+    ):
+        try:
+            with st.spinner(
+                "Przetwarzam dokumenty i przebudowuję indeks…"
+            ):
+                summary = rebuild_production_index(
+                    embedding_service=_embedding_service(),
+                )
+        except Exception as error:
+            _set_document_notice(
+                "error",
+                _friendly_error(error),
+            )
+        else:
+            if summary.documents:
+                message = (
+                    "Indeks jest gotowy: "
+                    f"{summary.documents} dokumentów, "
+                    f"{summary.total_points} chunków."
+                )
+            else:
+                message = "Pusty indeks został wyczyszczony."
+
+            _set_document_notice("success", message)
+
+        st.rerun()
+
+
+def _render_document_notice() -> None:
+    notice = st.session_state.pop(DOCUMENT_NOTICE_KEY, None)
+
+    if not notice:
+        return
+
+    notice_type, message = notice
+    renderer = getattr(st, notice_type, st.info)
+    renderer(message)
+
+
+def _set_document_notice(
+    notice_type: str,
+    message: str,
+) -> None:
+    st.session_state[DOCUMENT_NOTICE_KEY] = (
+        notice_type,
+        message,
+    )
+
+
+def _reset_delete_confirmation() -> None:
+    st.session_state[DELETE_CONFIRMATION_KEY] = False
+
+
+def _format_file_size(size_bytes: int) -> str:
+    if size_bytes < 1024:
+        return f"{size_bytes} B"
+
+    size_kilobytes = size_bytes / 1024
+
+    if size_kilobytes < 1024:
+        return f"{size_kilobytes:.1f} KB"
+
+    return f"{size_kilobytes / 1024:.1f} MB"
 
 
 def _friendly_error(error: Exception) -> str:

@@ -8,14 +8,16 @@ logs/
 data/qdrant/
 data/processed/
 data/eval/*_results.json
+data/user_documents/*
+!data/user_documents/.gitkeep
 
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 
-main — kopia.py
+main â€” kopia.py
 README.txt
-za³ozenia.txt
+zaÅ‚ozenia.txt
 
 main * kopia.py
 za*ozenia.txt
