@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import sys
+import os
+import threading
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any
@@ -24,6 +26,7 @@ from app.interfaces.web_runtime import (
     get_corpus_status,
     get_ollama_status,
     list_production_documents,
+    pull_ollama_model,
     rebuild_production_index,
     save_production_document,
 )
@@ -36,7 +39,11 @@ UPLOAD_VERSION_KEY = "knowledge_assistant_upload_version"
 SELECTED_DOCUMENT_KEY = "knowledge_assistant_selected_document"
 DELETE_CONFIRMATION_KEY = "knowledge_assistant_delete_confirmation"
 
-CORPUS_OPTIONS = ("production", "v2", "v1")
+CORPUS_OPTIONS = (
+    ("production",)
+    if config.app_env == "production"
+    else ("production", "v2", "v1")
+)
 CORPUS_LABELS = {
     "production": "MOJE DOKUMENTY",
     "v2": "V2 — TEST ZAAWANSOWANY",
@@ -172,6 +179,14 @@ def _render_sidebar() -> str:
         ):
             st.session_state[HISTORY_KEY][corpus] = []
             st.rerun()
+
+        if config.app_env == "production":
+            if st.button(
+                "Zamknij aplikację",
+                use_container_width=True,
+            ):
+                st.success("Aplikacja jest zamykana…")
+                threading.Timer(0.5, lambda: os._exit(0)).start()
 
         st.caption(
             f"Model: `{config.ollama_model}`  \n"
@@ -336,8 +351,45 @@ def _render_ollama_status() -> None:
         st.success(status.message, icon="✅")
     elif status.available:
         st.warning(status.message, icon="⚠️")
+
+        if st.button(
+            f"Pobierz model {config.ollama_model}",
+            use_container_width=True,
+        ):
+            _download_ollama_model()
     else:
         st.error(status.message, icon="🚫")
+        st.link_button(
+            "Zainstaluj Ollama",
+            "https://ollama.com/download/windows",
+            use_container_width=True,
+        )
+
+
+def _download_ollama_model() -> None:
+    progress_bar = st.progress(0.0)
+    status_placeholder = st.empty()
+
+    try:
+        for update in pull_ollama_model():
+            status_placeholder.caption(update.status)
+
+            if update.fraction is not None:
+                progress_bar.progress(update.fraction)
+    except Exception as error:
+        st.error(
+            f"Nie udało się pobrać modelu: {error}",
+            icon="🚫",
+        )
+        return
+
+    progress_bar.progress(1.0)
+    status_placeholder.caption("Model został pobrany.")
+    _cached_ollama_status.clear()
+    st.success(
+        f"Model {config.ollama_model} jest gotowy.",
+        icon="✅",
+    )
 
 
 def _render_document_manager() -> None:

@@ -1,0 +1,26 @@
+KNOWLEDGE ASSISTANT — SZYBKI START
+=================================
+
+Nie trzeba instalować Pythona ani wpisywać komend.
+
+1. Rozpakuj cały folder ZIP.
+2. Nie przenoś samego pliku KnowledgeAssistant.exe poza ten folder.
+3. Kliknij dwukrotnie KnowledgeAssistant.exe.
+4. Poczekaj, aż aplikacja otworzy się w przeglądarce.
+5. Jeżeli brakuje Ollamy, kliknij „Zainstaluj Ollama” i po instalacji
+   uruchom KnowledgeAssistant.exe ponownie.
+6. Jeżeli brakuje modelu gemma3:4b, kliknij „Pobierz model”. Pierwsze
+   pobranie wymaga internetu, kilku GB wolnego miejsca i może potrwać.
+7. Dodaj dokumenty TXT, PDF lub DOCX, kliknij „Zapisz dokumenty”, a potem
+   „Przebuduj indeks”.
+8. Po zakończeniu indeksowania zadawaj pytania w polu na dole strony.
+9. Zamknij program przyciskiem „Zamknij aplikację” w panelu bocznym.
+
+Prywatne dane aplikacji są przechowywane lokalnie w:
+%LOCALAPPDATA%\KnowledgeAssistant
+
+Ollama dla Windows:
+https://ollama.com/download/windows
+
+W razie problemu sprawdź logi w:
+%LOCALAPPDATA%\KnowledgeAssistant\logs

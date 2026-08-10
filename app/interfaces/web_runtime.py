@@ -1,7 +1,6 @@
+from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import cast
-
-import requests
 
 from app.core.config import (
     CORPUS_PROFILES,
@@ -24,6 +23,11 @@ from app.services.indexing_service import (
     IndexingService,
     IndexingSummary,
 )
+from app.services.ollama_service import (
+    OllamaModelPullProgress,
+    OllamaService,
+    OllamaStatus,
+)
 from app.storage.vector_store import QdrantVectorStore
 
 
@@ -34,13 +38,6 @@ class CorpusStatus:
     documents_directory: str
     documents: int
     points: int
-
-
-@dataclass(frozen=True)
-class OllamaStatus:
-    available: bool
-    model_available: bool
-    message: str
 
 
 class EmptyCorpusError(RuntimeError):
@@ -79,50 +76,13 @@ def get_corpus_status(corpus: str) -> CorpusStatus:
 def get_ollama_status(
     timeout_seconds: float = 3.0,
 ) -> OllamaStatus:
-    endpoint = f"{config.ollama_base_url.rstrip('/')}/api/tags"
-
-    try:
-        response = requests.get(
-            endpoint,
-            timeout=timeout_seconds,
-        )
-        response.raise_for_status()
-        payload = response.json()
-    except (requests.RequestException, ValueError):
-        return OllamaStatus(
-            available=False,
-            model_available=False,
-            message="Ollama nie odpowiada.",
-        )
-
-    raw_models = (
-        payload.get("models", [])
-        if isinstance(payload, dict)
-        else []
+    return _ollama_service().get_status(
+        timeout_seconds=timeout_seconds
     )
-    models = raw_models if isinstance(raw_models, list) else []
-    model_names = {
-        name
-        for model in models
-        if isinstance(model, dict)
-        for name in (model.get("name"), model.get("model"))
-        if isinstance(name, str)
-    }
-    model_available = config.ollama_model in model_names
 
-    if model_available:
-        message = f"Ollama i model {config.ollama_model} są gotowe."
-    else:
-        message = (
-            "Ollama działa, ale brakuje modelu "
-            f"{config.ollama_model}."
-        )
 
-    return OllamaStatus(
-        available=True,
-        model_available=model_available,
-        message=message,
-    )
+def pull_ollama_model() -> Iterator[OllamaModelPullProgress]:
+    return _ollama_service().pull_model()
 
 
 def list_production_documents() -> list[DocumentInfo]:
@@ -239,4 +199,11 @@ def _open_vector_store(
 def _production_library() -> DocumentLibrary:
     return DocumentLibrary(
         CORPUS_PROFILES["production"].raw_documents_dir
+    )
+
+
+def _ollama_service() -> OllamaService:
+    return OllamaService(
+        base_url=config.ollama_base_url,
+        model_name=config.ollama_model,
     )

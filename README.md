@@ -119,3 +119,36 @@ Dodano odizolowany profil `production`, bezpieczny upload i usuwanie plików,
 przebudowę indeksu z poziomu Streamlit, status Ollamy oraz ochronę prywatnych
 dokumentów przed przypadkowym dodaniem do Git. Corpusy v1 i v2 nadal służą
 wyłącznie jako zamrożone zestawy jakościowe.
+
+## Wersja 0.18.0 — aplikacja Windows bez terminala
+
+Gotowa paczka znajduje się w katalogu `release` jako
+`KnowledgeAssistant-Windows-x64-v0.18.0.zip`. Użytkownik rozpakowuje cały ZIP
+i uruchamia `KnowledgeAssistant.exe`; Python, PowerShell i PyCharm nie są
+potrzebne. Plik EXE musi pozostać w tym samym katalogu co dołączony folder
+`_internal`.
+
+Ollama pozostaje lokalnym silnikiem generującym odpowiedzi. Jeżeli nie jest
+zainstalowana, aplikacja pokazuje przycisk prowadzący do instalatora Windows.
+Jeżeli brakuje modelu `gemma3:4b`, można pobrać go bezpośrednio z panelu
+bocznego. Pierwsze pobranie wymaga połączenia z internetem i kilku GB wolnego
+miejsca.
+
+Przebieg dla użytkownika:
+
+1. Rozpakuj cały ZIP.
+2. Uruchom `KnowledgeAssistant.exe`.
+3. Zainstaluj Ollamę albo pobierz model, jeżeli aplikacja o to poprosi.
+4. Dodaj pliki TXT, PDF lub DOCX i kliknij `Zapisz dokumenty`.
+5. Kliknij `Przebuduj indeks`, a następnie zadawaj pytania.
+6. Zakończ program przyciskiem `Zamknij aplikację`.
+
+Dokumenty, indeks Qdrant i logi są zapisywane w
+`%LOCALAPPDATA%\KnowledgeAssistant`. Przy paczce znajduje się również prosty
+plik `START_TUTAJ.txt`.
+
+Budowanie paczki deweloperskiej:
+
+```powershell
+.\packaging\build_windows.ps1
+```
