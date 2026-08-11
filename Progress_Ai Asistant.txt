@@ -51,3 +51,4 @@ Sierpień
 8 - Przygotowanie programu pod github
 9 - Test programu pod kątem github
 10 - Publikacja prywatnego repozytorium, dodanie corpusu production oraz zarządzania własnymi dokumentami w Streamlit; przygotowanie i test paczki Windows EXE bez terminala
+11 - Przygotowanie wersji 0.19.0 Full Offline z przenośną Ollamą, lokalnym modelem Gemma, kontrolą SHA-256, licencjami i dzieleniem dużego wydania na części GitHub

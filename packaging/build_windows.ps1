@@ -1,5 +1,6 @@
 param(
-    [switch]$SkipInstall
+    [switch]$SkipInstall,
+    [switch]$SkipArchive
 )
 
 $ErrorActionPreference = "Stop"
@@ -47,11 +48,13 @@ if (-not (Test-Path -LiteralPath $executable)) {
 Copy-Item -LiteralPath $startGuide -Destination $distDirectory -Force
 
 New-Item -ItemType Directory -Force -Path $releaseDirectory | Out-Null
-Compress-Archive -Path (Join-Path $distDirectory "*") -DestinationPath $archive -Force
-
-$sizeMegabytes = (Get-Item -LiteralPath $archive).Length / 1MB
 
 Write-Host ""
 Write-Host "BUILD WINDOWS - READY"
 Write-Host "EXE: $executable"
-Write-Host ("ZIP: {0} ({1:N1} MB)" -f $archive, $sizeMegabytes)
+
+if (-not $SkipArchive) {
+    Compress-Archive -Path (Join-Path $distDirectory "*") -DestinationPath $archive -Force
+    $sizeMegabytes = (Get-Item -LiteralPath $archive).Length / 1MB
+    Write-Host ("ZIP: {0} ({1:N1} MB)" -f $archive, $sizeMegabytes)
+}

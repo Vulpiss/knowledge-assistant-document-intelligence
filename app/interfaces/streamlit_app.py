@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import sys
 import os
+import sys
 import threading
 from dataclasses import asdict
 from pathlib import Path
@@ -33,6 +33,9 @@ from app.interfaces.web_runtime import (
 
 
 APP_TITLE = "Knowledge Assistant"
+FULL_OFFLINE = (
+    os.getenv("KNOWLEDGE_ASSISTANT_FULL_OFFLINE") == "1"
+)
 HISTORY_KEY = "knowledge_assistant_histories"
 DOCUMENT_NOTICE_KEY = "knowledge_assistant_document_notice"
 UPLOAD_VERSION_KEY = "knowledge_assistant_upload_version"
@@ -350,20 +353,34 @@ def _render_ollama_status() -> None:
     if status.available and status.model_available:
         st.success(status.message, icon="✅")
     elif status.available:
-        st.warning(status.message, icon="⚠️")
+        if FULL_OFFLINE:
+            st.error(
+                "W paczce offline nie znaleziono modelu "
+                f"{config.ollama_model}. Pobierz paczkę ponownie.",
+                icon="🚫",
+            )
+        else:
+            st.warning(status.message, icon="⚠️")
 
-        if st.button(
-            f"Pobierz model {config.ollama_model}",
-            use_container_width=True,
-        ):
-            _download_ollama_model()
+            if st.button(
+                f"Pobierz model {config.ollama_model}",
+                use_container_width=True,
+            ):
+                _download_ollama_model()
     else:
-        st.error(status.message, icon="🚫")
-        st.link_button(
-            "Zainstaluj Ollama",
-            "https://ollama.com/download/windows",
-            use_container_width=True,
-        )
+        if FULL_OFFLINE:
+            st.error(
+                "Nie udało się uruchomić silnika z paczki offline. "
+                "Sprawdź plik logs/ollama.log.",
+                icon="🚫",
+            )
+        else:
+            st.error(status.message, icon="🚫")
+            st.link_button(
+                "Zainstaluj Ollama",
+                "https://ollama.com/download/windows",
+                use_container_width=True,
+            )
 
 
 def _download_ollama_model() -> None:

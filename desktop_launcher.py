@@ -19,9 +19,50 @@ from pathlib import Path
 APP_NAME = "Knowledge Assistant"
 APP_DATA_DIRECTORY_NAME = "KnowledgeAssistant"
 MUTEX_NAME = "Local\\KnowledgeAssistantDesktopApp"
-OLLAMA_HEALTH_URL = "http://127.0.0.1:11434/api/tags"
+DEFAULT_OLLAMA_BASE_URL = "http://127.0.0.1:11434"
 
 _mutex_handle: int | None = None
+_ollama_job_handle: int | None = None
+_ollama_process: subprocess.Popen[bytes] | None = None
+
+
+class _JobObjectBasicLimitInformation(ctypes.Structure):
+    _fields_ = [
+        ("PerProcessUserTimeLimit", ctypes.c_int64),
+        ("PerJobUserTimeLimit", ctypes.c_int64),
+        ("LimitFlags", ctypes.c_uint32),
+        ("MinimumWorkingSetSize", ctypes.c_size_t),
+        ("MaximumWorkingSetSize", ctypes.c_size_t),
+        ("ActiveProcessLimit", ctypes.c_uint32),
+        ("Affinity", ctypes.c_size_t),
+        ("PriorityClass", ctypes.c_uint32),
+        ("SchedulingClass", ctypes.c_uint32),
+    ]
+
+
+class _IoCounters(ctypes.Structure):
+    _fields_ = [
+        ("ReadOperationCount", ctypes.c_uint64),
+        ("WriteOperationCount", ctypes.c_uint64),
+        ("OtherOperationCount", ctypes.c_uint64),
+        ("ReadTransferCount", ctypes.c_uint64),
+        ("WriteTransferCount", ctypes.c_uint64),
+        ("OtherTransferCount", ctypes.c_uint64),
+    ]
+
+
+class _JobObjectExtendedLimitInformation(ctypes.Structure):
+    _fields_ = [
+        (
+            "BasicLimitInformation",
+            _JobObjectBasicLimitInformation,
+        ),
+        ("IoInfo", _IoCounters),
+        ("ProcessMemoryLimit", ctypes.c_size_t),
+        ("JobMemoryLimit", ctypes.c_size_t),
+        ("PeakProcessMemoryUsed", ctypes.c_size_t),
+        ("PeakJobMemoryUsed", ctypes.c_size_t),
+    ]
 
 
 def main() -> int:
@@ -34,7 +75,7 @@ def main() -> int:
         _open_existing_instance(app_data_root)
         return 0
 
-    _start_ollama_if_available()
+    _start_ollama_if_available(app_data_root)
     port = _find_available_port()
     _write_port_file(app_data_root, port)
     application_url = f"http://127.0.0.1:{port}"
@@ -80,6 +121,7 @@ def main() -> int:
         return int(streamlit_cli.main() or 0)
     finally:
         _remove_port_file(app_data_root)
+        _stop_bundled_ollama()
 
 
 def _configure_environment(resource_root: Path) -> Path:
@@ -135,11 +177,50 @@ def _configure_environment(resource_root: Path) -> Path:
         "STREAMLIT_BROWSER_GATHER_USAGE_STATS": "false",
     }
 
+    _configure_bundled_ollama_environment(
+        resource_root,
+        environment,
+    )
+
     if model_directory.exists():
         environment["EMBEDDING_MODEL_NAME"] = str(model_directory)
 
     os.environ.update(environment)
     return app_data_root
+
+
+def _configure_bundled_ollama_environment(
+    resource_root: Path,
+    environment: dict[str, str],
+) -> None:
+    offline_root = resource_root / "offline"
+    marker = offline_root / "FULL_OFFLINE"
+    executable = offline_root / "ollama" / "ollama.exe"
+    models_directory = offline_root / "models"
+
+    if not (
+        marker.is_file()
+        and executable.is_file()
+        and models_directory.is_dir()
+    ):
+        return
+
+    ollama_port = _find_available_port()
+    ollama_base_url = f"http://127.0.0.1:{ollama_port}"
+    environment.update(
+        {
+            "KNOWLEDGE_ASSISTANT_FULL_OFFLINE": "1",
+            "OLLAMA_EXECUTABLE": str(executable),
+            "OLLAMA_MODELS": str(models_directory),
+            "OLLAMA_HOST": f"127.0.0.1:{ollama_port}",
+            "OLLAMA_BASE_URL": ollama_base_url,
+            "OLLAMA_LOAD_TIMEOUT": "10m",
+            "OLLAMA_NO_CLOUD": "1",
+            "OLLAMA_NOHISTORY": "1",
+            "OLLAMA_NOPRUNE": "1",
+            "OLLAMA_TIMEOUT_SECONDS": "600",
+        }
+    )
 
 
 def _configure_logging(app_data_root: Path) -> None:
@@ -182,7 +263,9 @@ def _open_existing_instance(app_data_root: Path) -> None:
     webbrowser.open(f"http://127.0.0.1:{port}")
 
 
-def _start_ollama_if_available() -> None:
+def _start_ollama_if_available(app_data_root: Path) -> None:
+    global _ollama_process
+
     if _ollama_is_ready():
         return
 
@@ -192,12 +275,31 @@ def _start_ollama_if_available() -> None:
         logging.warning("Ollama executable was not found.")
         return
 
+    bundled = (
+        os.getenv("KNOWLEDGE_ASSISTANT_FULL_OFFLINE") == "1"
+    )
+    log_stream = None
+
     try:
-        subprocess.Popen(
+        if bundled:
+            log_stream = (
+                app_data_root / "logs" / "ollama.log"
+            ).open("ab")
+
+        process = subprocess.Popen(
             [str(executable), "serve"],
+            cwd=str(executable.parent),
             stdin=subprocess.DEVNULL,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            stdout=(
+                log_stream
+                if log_stream is not None
+                else subprocess.DEVNULL
+            ),
+            stderr=(
+                subprocess.STDOUT
+                if log_stream is not None
+                else subprocess.DEVNULL
+            ),
             creationflags=getattr(
                 subprocess,
                 "CREATE_NO_WINDOW",
@@ -207,8 +309,22 @@ def _start_ollama_if_available() -> None:
     except OSError:
         logging.exception("Could not start Ollama.")
         return
+    finally:
+        if log_stream is not None:
+            log_stream.close()
 
-    for _ in range(40):
+    if bundled:
+        _ollama_process = process
+        _assign_process_to_kill_on_close_job(process)
+
+    for _ in range(120):
+        if process.poll() is not None:
+            logging.error(
+                "Ollama exited during startup with code %s.",
+                process.returncode,
+            )
+            return
+
         if _ollama_is_ready():
             logging.info("Ollama started successfully.")
             return
@@ -216,6 +332,72 @@ def _start_ollama_if_available() -> None:
         time.sleep(0.5)
 
     logging.warning("Ollama did not become ready in time.")
+
+
+def _assign_process_to_kill_on_close_job(
+    process: subprocess.Popen[bytes],
+) -> None:
+    global _ollama_job_handle
+
+    if os.name != "nt":
+        return
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel32.CreateJobObjectW.restype = ctypes.c_void_p
+    kernel32.SetInformationJobObject.restype = ctypes.c_bool
+    kernel32.AssignProcessToJobObject.restype = ctypes.c_bool
+    kernel32.CloseHandle.restype = ctypes.c_bool
+
+    job_handle = kernel32.CreateJobObjectW(None, None)
+
+    if not job_handle:
+        logging.warning("Could not create Ollama job object.")
+        return
+
+    information = _JobObjectExtendedLimitInformation()
+    information.BasicLimitInformation.LimitFlags = 0x00002000
+    information_class = 9
+
+    configured = kernel32.SetInformationJobObject(
+        ctypes.c_void_p(job_handle),
+        information_class,
+        ctypes.byref(information),
+        ctypes.sizeof(information),
+    )
+    assigned = configured and kernel32.AssignProcessToJobObject(
+        ctypes.c_void_p(job_handle),
+        ctypes.c_void_p(int(process._handle)),
+    )
+
+    if not assigned:
+        logging.warning("Could not attach Ollama to the job object.")
+        kernel32.CloseHandle(ctypes.c_void_p(job_handle))
+        return
+
+    _ollama_job_handle = int(job_handle)
+
+
+def _stop_bundled_ollama() -> None:
+    global _ollama_job_handle
+    global _ollama_process
+
+    process = _ollama_process
+
+    if process is not None and process.poll() is None:
+        process.terminate()
+
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=5)
+
+    _ollama_process = None
+
+    if _ollama_job_handle is not None and os.name == "nt":
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel32.CloseHandle(ctypes.c_void_p(_ollama_job_handle))
+        _ollama_job_handle = None
 
 
 def _find_ollama_executable() -> Path | None:
@@ -242,12 +424,19 @@ def _find_ollama_executable() -> Path | None:
 def _ollama_is_ready() -> bool:
     try:
         with urllib.request.urlopen(
-            OLLAMA_HEALTH_URL,
+            f"{_ollama_base_url()}/api/tags",
             timeout=1,
         ) as response:
             return response.status == 200
     except (OSError, urllib.error.URLError):
         return False
+
+
+def _ollama_base_url() -> str:
+    return os.getenv(
+        "OLLAMA_BASE_URL",
+        DEFAULT_OLLAMA_BASE_URL,
+    ).rstrip("/")
 
 
 def _find_available_port() -> int:

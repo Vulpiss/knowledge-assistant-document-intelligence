@@ -152,3 +152,36 @@ Budowanie paczki deweloperskiej:
 ```powershell
 .\packaging\build_windows.ps1
 ```
+
+## Wersja 0.19.0 — Full Offline
+
+Wariant Full Offline zawiera aplikację, przenośną Ollamę `v0.32.8`, lokalny
+model `gemma3:4b` oraz embeddingi. Nie wymaga instalowania Ollamy ani dostępu
+do internetu. Funkcje chmurowe Ollamy są wymuszone wyłączone przez
+`OLLAMA_NO_CLOUD=1`, a silnik działa na osobnym lokalnym porcie i jest zamykany
+razem z aplikacją.
+
+Artefakty lokalne:
+
+- `dist/KnowledgeAssistant-Full-Offline` — gotowy folder, około 6,19 GB,
+- `release/KnowledgeAssistant-Full-Offline-Windows-x64-v0.19.0.zip` — pełny
+  ZIP do przeniesienia np. pendrivem, około 4,98 GB,
+- `release/KnowledgeAssistant-Full-Offline-v0.19.0-parts` — trzy części
+  poniżej limitu 2 GiB pojedynczego pliku GitHub Release.
+
+Użytkownik pobierający części umieszcza je w jednym folderze i uruchamia
+`SCAL_I_ROZPAKUJ.cmd`. Skrypt sprawdza SHA-256 każdej części, scala pełne
+archiwum, ponownie sprawdza SHA-256 i rozpakowuje aplikację. Podczas tej
+operacji zalecane jest co najmniej 20 GB wolnego miejsca.
+
+Budowanie pełnego wariantu:
+
+```powershell
+.\packaging\build_full_offline.ps1 -SkipInstall
+```
+
+Skrypt pobiera oficjalny przenośny runtime Ollamy tylko przy pierwszym buildzie
+i sprawdza jego ustaloną sumę SHA-256. Z lokalnego magazynu Ollamy eksportuje
+wyłącznie manifest `gemma3:4b` oraz wskazane przez niego bloby. Do dystrybucji
+dołączane są licencja MIT Ollamy, wymagany `GEMMA_NOTICE.txt` i kopia warunków
+użycia Gemmy.

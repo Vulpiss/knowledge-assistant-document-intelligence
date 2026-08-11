@@ -17,6 +17,7 @@ data/user_documents/*
 build/
 dist/
 release/
+packaging/cache/
 
 main — kopia.py
 README.txt

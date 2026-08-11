@@ -1,0 +1,40 @@
+KNOWLEDGE ASSISTANT — FULL OFFLINE
+=================================
+
+Ta wersja działa bez internetu. Zawiera aplikację, przenośną Ollamę i model
+gemma3:4b. Nie trzeba instalować Pythona, PyCharma ani Ollamy.
+
+JEŻELI OTRZYMAŁEŚ GOTOWY FOLDER:
+
+1. Nie przenoś samego pliku KnowledgeAssistant.exe poza ten folder.
+2. Kliknij dwukrotnie KnowledgeAssistant.exe.
+3. Pierwsze uruchomienie może potrwać dłużej.
+4. Dodaj dokumenty TXT, PDF lub DOCX i kliknij „Zapisz dokumenty”.
+5. Kliknij „Przebuduj indeks”.
+6. Zadawaj pytania w polu na dole strony.
+7. Zamknij program przyciskiem „Zamknij aplikację”.
+
+JEŻELI POBRAŁEŚ CZĘŚCI Z GITHUBA:
+
+1. Pobierz wszystkie pliki kończące się na .part001, .part002 itd.
+2. Umieść je w jednym folderze razem z pozostałymi małymi plikami wydania.
+3. Kliknij dwukrotnie SCAL_I_ROZPAKUJ.cmd.
+4. Poczekaj na sprawdzenie i rozpakowanie paczki.
+5. Wejdź do utworzonego folderu i uruchom KnowledgeAssistant.exe.
+
+WYMAGANIA:
+
+- Windows 10 22H2 lub nowszy, 64-bitowy,
+- co najmniej 8 GB RAM; zalecane 16 GB,
+- około 20 GB wolnego miejsca podczas składania i rozpakowywania części,
+- późniejsze działanie nie wymaga połączenia z internetem.
+
+Prywatne dokumenty, indeks i logi są przechowywane w:
+%LOCALAPPDATA%\KnowledgeAssistant
+
+Licencje Ollamy i modelu Gemma znajdują się w folderze:
+_internal\offline\licenses
+
+W razie problemu sprawdź:
+%LOCALAPPDATA%\KnowledgeAssistant\logs\launcher.log
+%LOCALAPPDATA%\KnowledgeAssistant\logs\ollama.log
